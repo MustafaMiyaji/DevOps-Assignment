@@ -1,0 +1,49 @@
+name: Build and Push to ECR
+
+on:
+  push:
+    branches: [develop]
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REGISTRY: 533267107704.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+  ECR_REPO_FRONTEND: ${{ secrets.ECR_REPO_FRONTEND }}
+  ECR_REPO_BACKEND: ${{ secrets.ECR_REPO_BACKEND }}
+
+jobs:
+  push-to-ecr:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # FRONTEND
+      - name: Build frontend Docker image
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPO_FRONTEND:${{ github.sha }} ./frontend
+
+      - name: Push frontend image to ECR
+        run: |
+          docker push $ECR_REGISTRY/$ECR_REPO_FRONTEND:${{ github.sha }}
+
+      # BACKEND
+      - name: Build backend Docker image
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPO_BACKEND:${{ github.sha }} ./backend
+
+      - name: Push backend image to ECR
+        run: |
+          docker push $ECR_REGISTRY/$ECR_REPO_BACKEND:${{ github.sha }}
