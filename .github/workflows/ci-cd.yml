@@ -31,17 +31,15 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      - name: Install backend deps
+      - name: Install backend dependencies
         working-directory: backend
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
-      - name: Test backend health
+      - name: Test backend import
         working-directory: backend
         run: |
           echo 'from app.main import app' > test_import.py
           python test_import.py
+
 
   # You can add deployment jobs next...
