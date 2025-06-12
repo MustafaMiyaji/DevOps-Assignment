@@ -34,9 +34,9 @@ jobs:
       - name: Build frontend Docker image
         run: |
           docker build \
-            --build-arg NEXT_PUBLIC_API_URL=http://devops-assignment-alb-1591292158.ap-south-1.elb.amazonaws.com/api \
-            -t $ECR_REGISTRY/$ECR_REPO_FRONTEND:latest
-
+        --build-arg NEXT_PUBLIC_API_URL=http://devops-assignment-alb-1591292158.ap-south-1.elb.amazonaws.com/api \
+        -t $ECR_REGISTRY/$ECR_REPO_FRONTEND:latest ./frontend
+        
       - name: Push frontend image to ECR
         run: |
           docker push $ECR_REGISTRY/$ECR_REPO_FRONTEND:latest
