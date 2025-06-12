@@ -1,19 +1,24 @@
 # Stage 1: Build
-FROM python:3.10-slim AS builder
+FROM node:18-alpine AS builder
 
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install --user -r requirements.txt
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
 
-# Stage 2: Runtime
-FROM python:3.10-slim
+# Stage 2: Serve
+FROM node:18-alpine AS runner
 
-ENV PATH="/root/.local/bin:$PATH"
 WORKDIR /app
 
-COPY --from=builder /root/.local /root/.local
-COPY app/ app/
+ENV NODE_ENV=production
+ENV PORT=3000
 
-EXPOSE 8000
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 3000
+
+CMD ["npm", "start"]
