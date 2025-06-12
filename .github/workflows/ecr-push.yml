@@ -41,6 +41,14 @@ jobs:
         run: |
           docker push $ECR_REGISTRY/$ECR_REPO_FRONTEND:${{ github.sha }}
 
+      - name: Force ECS redeploy for frontend
+        run: |
+          aws ecs update-service \
+            --cluster devops-assignment-cluster \
+            --service devops-assignment-frontend-service \
+            --force-new-deployment \
+            --region $AWS_REGION
+
       # BACKEND
       - name: Build backend Docker image
         run: |
