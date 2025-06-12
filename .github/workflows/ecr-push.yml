@@ -33,7 +33,10 @@ jobs:
       # FRONTEND
       - name: Build frontend Docker image
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPO_FRONTEND:${{ github.sha }} ./frontend
+          docker build \
+          --build-arg NEXT_PUBLIC_API_URL=http://devops-assignment-alb-1591292158.ap-south-1.elb.amazonaws.com/api \
+          -t frontend-fixed .
+
 
       - name: Push frontend image to ECR
         run: |
