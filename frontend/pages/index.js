@@ -1,27 +1,30 @@
-import { useState, useEffect } from 'react';
-import Head from 'next/head';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import Head from "next/head";
+import axios from "axios";
 
 export default function Home() {
-  const [message, setMessage] = useState('Loading...');
-  const [status, setStatus] = useState('');
+  const [message, setMessage] = useState("Loading...");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // First check if backend is healthy
-        const healthCheck = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/health`);
-        
-        if (healthCheck.data.status === 'healthy') {
-          setStatus('Backend is connected!');
-          // Then fetch the message
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/message`);
-          setMessage(response.data.message);
+        const backendUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+        console.log("API URL from env:", process.env.NEXT_PUBLIC_API_URL);
+        console.log("Final backend URL:", backendUrl);
+
+        const healthRes = await axios.get(`${backendUrl}/api/health`);
+        if (healthRes.data.status === "healthy") {
+          setStatus("Backend is connected!");
+
+          const msgRes = await axios.get(`${backendUrl}/api/message`);
+          setMessage(msgRes.data.message);
         }
       } catch (error) {
-        setMessage('Failed to connect to the backend');
-        setStatus('Backend connection failed');
-        console.error('Error:', error);
+        console.error("Error:", error);
+        setStatus("Backend connection failed");
+        setMessage("Failed to connect to the backend");
       }
     };
 
@@ -32,21 +35,34 @@ export default function Home() {
     <div className="container">
       <Head>
         <title>DevOps Assignment</title>
-        <meta name="description" content="DevOps Assignment with FastAPI and Next.js" />
+        <meta
+          name="description"
+          content="DevOps Assignment with FastAPI and Next.js"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
         <h1>DevOps Assignment</h1>
         <div className="status">
-          <p>Status: <span className={status.includes('connected') ? 'success' : 'error'}>{status}</span></p>
+          <p>
+            Status:{" "}
+            <span
+              className={status.includes("connected") ? "success" : "error"}
+            >
+              {status}
+            </span>
+          </p>
         </div>
         <div className="message-box">
           <h2>Backend Message:</h2>
           <p>{message}</p>
         </div>
         <div className="info">
-          <p>Backend URL: {process.env.NEXT_PUBLIC_API_URL}</p>
+          <p>
+            Backend URL:{" "}
+            {process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"}
+          </p>
         </div>
       </main>
 
@@ -107,3 +123,4 @@ export default function Home() {
     </div>
   );
 }
+
