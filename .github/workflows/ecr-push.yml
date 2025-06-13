@@ -30,19 +30,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # FRONTEND
-      - name: Build frontend Docker image
+      - name: Build frontend image
         run: |
           docker build \
             --build-arg NEXT_PUBLIC_API_URL=http://devops-assignment-alb-1591292158.ap-south-1.elb.amazonaws.com/api \
             -t $ECR_REGISTRY/$ECR_REPO_FRONTEND:latest \
             ./frontend
 
-      - name: Push frontend image to ECR
+      - name: Push frontend image
         run: |
           docker push $ECR_REGISTRY/$ECR_REPO_FRONTEND:latest
 
-      - name: Force ECS redeploy for frontend
+      - name: Force ECS redeploy frontend
         run: |
           aws ecs update-service \
             --cluster devops-assignment-cluster \
@@ -50,11 +49,18 @@ jobs:
             --force-new-deployment \
             --region $AWS_REGION
 
-      # BACKEND
-      - name: Build backend Docker image
+      - name: Build backend image
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPO_BACKEND:${{ github.sha }} ./backend
+          docker build -t $ECR_REGISTRY/$ECR_REPO_BACKEND:latest ./backend
 
-      - name: Push backend image to ECR
+      - name: Push backend image
         run: |
-          docker push $ECR_REGISTRY/$ECR_REPO_BACKEND:${{ github.sha }}
+          docker push $ECR_REGISTRY/$ECR_REPO_BACKEND:latest
+
+      - name: Force ECS redeploy backend
+        run: |
+          aws ecs update-service \
+            --cluster devops-assignment-cluster \
+            --service devops-assignment-backend-service \
+            --force-new-deployment \
+            --region $AWS_REGION
