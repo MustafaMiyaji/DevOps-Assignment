@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
 import threading
+import time
 
 # Load environment variables
 load_dotenv()
@@ -29,7 +30,8 @@ async def get_message():
 
 def burn_cpu():
     while True:
-        pass  # Infinite loop to max out CPU
+        print("Burning CPU...")
+        _ = [x**2 for x in range(10000)]
+        time.sleep(0.1)
 
-# Start it in a separate thread
 threading.Thread(target=burn_cpu, daemon=True).start()
