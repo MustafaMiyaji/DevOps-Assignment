@@ -18,6 +18,7 @@ app.add_middleware(
 
 def get_secret():
     secret_name = os.getenv("SECRET_ARN")
+    print("🔍 SECRET_ARN:", secret_name)  # Temporary debug
     region_name = "ap-south-1"
     client = boto3.client("secretsmanager", region_name=region_name)
     response = client.get_secret_value(SecretId=secret_name)
