@@ -1,0 +1,10 @@
+aws_region        = "ap-south-1"
+aws_account_id    = "ACN_ID"
+aws_access_key    = "ACC_KEY"
+aws_secret_key    = "SEC_KEY"
+project_name      = "devops-assignment"
+ecr_repo_frontend = "devops-frontend"
+ecr_repo_backend  = "devops-backend"
+alert_email = "MAIL"
+backend_api_key = "super-secret-demo-key"
+
