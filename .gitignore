@@ -20,6 +20,6 @@ venve/
 .DS_Store
 
 # Terraform (if added later)
-*.tfstate
-*.tfstate.backup
 .terraform/
+terraform.tfstate
+terraform.tfstate.backup
