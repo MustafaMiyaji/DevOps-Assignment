@@ -38,7 +38,7 @@ DevOps-Assignment/
 
 ## ⚙️ Architecture Overview
 
-![Architecture](Visual Diagram.png)
+![Architecture](Visual-Diagram.png)
 
 1. Code pushed to `develop` → triggers GitHub Actions
 2. Docker images built & pushed to Amazon ECR
