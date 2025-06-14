@@ -19,14 +19,9 @@ app.add_middleware(
 def get_secret():
     secret_name = os.getenv("SECRET_ARN")
     region_name = "ap-south-1"
-
     client = boto3.client("secretsmanager", region_name=region_name)
     response = client.get_secret_value(SecretId=secret_name)
     return json.loads(response["SecretString"])
-
-# Load and configure OpenAI key
-creds = get_secret()
-openai.api_key = creds["api_key"]
 
 @app.get("/api/health")
 async def health_check():
@@ -35,11 +30,12 @@ async def health_check():
 @app.get("/api/message")
 async def get_message():
     try:
+        creds = get_secret()
+        openai.api_key = creds["api_key"]
+
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=[
-                {"role": "user", "content": "Say hello from a DevOps container!"}
-            ],
+            messages=[{"role": "user", "content": "Say hello from a DevOps container!"}],
             max_tokens=50
         )
         return {"message": response.choices[0].message.content}
