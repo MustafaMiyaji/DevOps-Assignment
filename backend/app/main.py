@@ -1,17 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import os
-from dotenv import load_dotenv
 import boto3
 import json
 import os
-
-# Load environment variables
-load_dotenv()
+import openai
 
 app = FastAPI()
 
-# Configure CORS
+# Enable CORS for all origins
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,24 +16,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def get_secret():
+    secret_name = os.getenv("SECRET_ARN")
+    region_name = "ap-south-1"
+
+    client = boto3.client("secretsmanager", region_name=region_name)
+    response = client.get_secret_value(SecretId=secret_name)
+    return json.loads(response["SecretString"])
+
+# Load and configure OpenAI key
+creds = get_secret()
+openai.api_key = creds["api_key"]
+
 @app.get("/api/health")
 async def health_check():
     return {"status": "healthy", "message": "Backend is running successfully"}
 
 @app.get("/api/message")
 async def get_message():
-    return {"message": "You've successfully integrated the backend!"}
-
-def get_secret():
-    secret_name = os.getenv("SECRET_ARN")
-    region_name = "ap-south-1"
-
-    session = boto3.session.Session()
-    client = session.client(service_name='secretsmanager', region_name=region_name)
-
-    response = client.get_secret_value(SecretId=secret_name)
-    return json.loads(response['SecretString'])
-
-# Use the secret
-creds = get_secret()
-print("🔐 API Key from Secrets Manager:", creds["api_key"])
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": "Say hello from a DevOps container!"}
+            ],
+            max_tokens=50
+        )
+        return {"message": response.choices[0].message.content}
+    except Exception as e:
+        return {"error": str(e)}
