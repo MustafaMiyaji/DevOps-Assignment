@@ -19,7 +19,7 @@ venve/
 *.swp
 .DS_Store
 
-# Terraform (if added later)
+# Terraform
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
