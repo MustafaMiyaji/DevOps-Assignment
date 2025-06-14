@@ -1,130 +1,108 @@
+# 🚀 DevOps Assignment: Full-Stack Deployment with CI/CD, Terraform, and AWS
 
-# DevOps Assignment
+This project demonstrates a full-stack deployment workflow using:
 
-This is a full-stack DevOps project with a **FastAPI backend** and a **Next.js frontend**, demonstrating a complete DevOps lifecycle — version control, containerization, CI/CD, infrastructure as code, monitoring, and security using AWS.
-
----
-
-## 🏗️ Architecture Overview
-
-This project is a **two-tier web application**:
-- **Backend**: FastAPI (Python) serving RESTful APIs
-- **Frontend**: Next.js (React) fetching data from the backend
-
-The goal is to containerize and deploy the entire stack on AWS ECS using Terraform, with CI/CD pipelines, secure secrets management, and monitoring via AWS CloudWatch.
+- **Frontend:** Next.js (React)
+- **Backend:** FastAPI (Python)
+- **Containerization:** Docker (multi-stage builds)
+- **Infrastructure:** AWS ECS (Fargate), ALB, Secrets Manager
+- **IaC:** Terraform
+- **CI/CD:** GitHub Actions
 
 ---
 
-## 📁 Project Structure
+## 📦 Project Structure
 
 ```
-.
-├── backend/               # FastAPI backend
-│   ├── app/
-│   │   └── main.py        # Main FastAPI application
-│   └── requirements.txt   # Python dependencies
-└── frontend/              # Next.js frontend
-    ├── pages/
-    │   └── index.js       # Main page
-    ├── public/            # Static files
-    └── package.json       # Node.js dependencies
+DevOps-Assignment/
+├── frontend/        # Next.js frontend (port 3000)
+├── backend/         # FastAPI backend (port 8000)
+├── terraform/       # Terraform IaC setup
+├── .github/workflows/
+│   └── ecr-push.yml # CI/CD pipeline to build & push Docker images
+└── README.md
 ```
 
 ---
 
-## 🌱 Prerequisites
+## 🌍 Hosted Links
 
-- Python 3.8+
-- Node.js 16+
-- npm or yarn
+| Component | URL |
+|----------|-----|
+| 🖥️ Frontend | [http://devops-assignment-alb-<...>.ap-south-1.elb.amazonaws.com](http://devops-assignment-alb-335229884.ap-south-1.elb.amazonaws.com/) |
+| 🔗 Backend Health | [http://devops-assignment-alb-<...>.ap-south-1.elb.amazonaws.com/api/health](http://devops-assignment-alb-335229884.ap-south-1.elb.amazonaws.com/api/health) |
+
+
+"I might take down the link after few days, its costing me money"
+---
+
+## ⚙️ Architecture Overview
+
+![Architecture](Visual Diagram.png)
+
+1. Code pushed to `develop` → triggers GitHub Actions
+2. Docker images built & pushed to Amazon ECR
+3. Terraform provisions ECS + ALB + networking
+4. Frontend & backend services auto-deployed on ECS Fargate
+5. Load Balancer routes traffic to respective targets
+6. Secrets fetched securely from AWS Secrets Manager
+7. Monitoring via CloudWatch Dashboards and Alarms
 
 ---
 
-## ⚙️ Backend Setup
+## 🔁 Git Workflow
 
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate        # On Windows: .\venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-
-- The backend will be available at `http://localhost:8000`
-
----
-
-## 🖥️ Frontend Setup
-
-```bash
-cd frontend
-npm install        # or yarn
-```
-
-#### Configure backend URL:
-Create or update `.env.local` in the `frontend/` folder:
-
-```
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-Then start the frontend server:
-
-```bash
-npm run dev        # or yarn dev
-```
-
-- The frontend will be available at `http://localhost:3000`
-
----
-
-## 🧪 Testing the Integration
-
-1. Start both frontend and backend
-2. Open the browser at `http://localhost:3000`
-3. You should see:
-   - A success message from the backend
-   - Backend status displayed
-   - The API message: `"You've successfully integrated the backend!"`
-
----
-
-## 🔀 Branching Strategy
-
-We follow a standard **Git Flow** branching model:
-
-- `main`: Production-ready code
-- `develop`: Integration and staging
-- `feature/*`: For new features and experiments
-
-All development happens in `feature/*` branches, which are merged into `develop` via Pull Requests. Stable changes from `develop` are then merged into `main`.
-
----
-
-## 🔁 Changing the Backend URL
-
-Update `NEXT_PUBLIC_API_URL` in `frontend/.env.local`:
-
-```env
-NEXT_PUBLIC_API_URL=http://your-backend-url.com
-```
-
-Restart the Next.js dev server after any changes.
-
----
-
-## 🚀 For Production Deployment
-
-```bash
-npm run build      # or yarn build
-npm start          # or yarn start
+git checkout -b feature-branch
+# make changes
+git commit -m "🚀 Add feature"
+git push origin feature-branch
+# open pull request to 'develop'
 ```
 
 ---
 
-## 🔌 API Endpoints
+## 🔐 Security
 
-- `GET /api/health`
-  - Returns: `{"status": "healthy", "message": "Backend is running successfully"}`
-- `GET /api/message`
-  - Returns: `{"message": "You've successfully integrated the backend!"}`
+- IAM roles grant **least privilege** to ECS tasks
+- Secrets like API keys are stored in **AWS Secrets Manager**
+- Only ECS tasks can fetch secrets (via IAM permissions)
+
+---
+
+## 📈 Monitoring
+
+- CloudWatch Dashboard with:
+  - CPU & memory metrics (frontend + backend)
+  - Request count via ALB
+- Alert set up:
+  - 📩 Email notification if CPU > 70% for 5 minutes
+
+---
+
+## 🧪 How to Test
+
+- Visit the frontend URL → should show backend integration
+- Visit `/api/health` → should return status JSON
+- Trigger `terraform apply` to see live infra provisioning
+- Watch GitHub Actions for CI/CD build logs
+
+---
+
+## 📦 Terraform Evidence
+
+- See `/terraform/terraform.tfstate`
+- All `.tf` files in `/terraform` define your AWS infrastructure
+- Logs of successful `terraform apply` available via screenshots or GitHub Releases
+
+---
+
+## 🤝 Contributors
+
+- 👨‍💻 Mustafa Miyaji
+
+---
+
+## 📜 License
+
+MIT
