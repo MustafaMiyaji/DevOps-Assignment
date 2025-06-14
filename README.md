@@ -59,6 +59,23 @@ git commit -m "🚀 Add feature"
 git push origin feature-branch
 # open pull request to 'develop'
 ```
+---
+
+## 🎥 Demo Video
+
+A complete walkthrough covering:
+
+- Project architecture and GitHub workflow
+- Dockerization strategy (multi-stage builds)
+- CI/CD flow via GitHub Actions
+- Infrastructure provisioning via Terraform
+- AWS monitoring (CloudWatch) and alerting setup
+- Security measures (IAM roles, Secrets Manager)
+- Live test of frontend ↔ backend integration
+
+👉 [Watch the demo video](https://youtu.be/-GJ1G1PKEbM)
+
+---
 
 ---
 
