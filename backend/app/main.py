@@ -4,14 +4,13 @@ import os
 from dotenv import load_dotenv
 import boto3
 import json
-import os
 
 # Load environment variables
 load_dotenv()
 
 app = FastAPI()
 
-# Configure CORS
+# Enable CORS for frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,6 +27,7 @@ async def health_check():
 async def get_message():
     return {"message": "You've successfully integrated the backend!"}
 
+# Optional: still supports fetching secrets if needed later
 def get_secret():
     secret_name = os.getenv("SECRET_ARN")
     region_name = "ap-south-1"
