@@ -26,6 +26,7 @@ DevOps-Assignment/
 ---
 
 ## 🌍 Hosted Links
+I Might Take Down The Link After A Few Days, Its Costing Me Money
 
 | Component | URL |
 |----------|-----|
@@ -33,7 +34,6 @@ DevOps-Assignment/
 | 🔗 Backend Health | [http://devops-assignment-alb-<...>.ap-south-1.elb.amazonaws.com/api/health](http://devops-assignment-alb-335229884.ap-south-1.elb.amazonaws.com/api/health) |
 
 
-"I might take down the link after few days, its costing me money"
 ---
 
 ## ⚙️ Architecture Overview
